@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Add New Address</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="single-product.html">Delivery Addresses</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+</section>
+    <!-- End Banner Area -->
+
+
+<section class="checkout_area section_gap">
+    <div class="container">
+        <div class="row">
+            <div style="padding-left:25%;" class="col-lg-12">
+            <div class="billing_details">
+                <div class="row">
+                    <div class="col-lg-8" style="border: 2px solid; border-radius:5px; padding:30px;">
+                        <h3 style="text-align:center;">Add New Address</h3>
+
+                        <form class="row contact_form" action="#" method="POST">
+                            {% csrf_token %}
+                            <div class="col-md-6 form-group p_star">
+                                <h6>Name:</h6>
+                                <input type="text" class="form-control" id="name-value" name="name" required>
+                            </div>
+                            <div class="col-md-6 form-group p_star">
+                                <h6>Phone Number:</h6>
+                                <input type="text" class="form-control" id="phone-value" name="phone" required pattern="^[7-9][0-9]{9}$">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <h6>Address 1:</h6>
+                                <input type="text" class="form-control" id="address-1-value" name="address1" required>
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <h6>Address 2:</h6>
+                                <input type="text" class="form-control" id="address-2-value" name="address2">
+                            </div>
+                            <div class="col-md-6 form-group p_star">
+                                <h6>City:</h6>
+                                <input type="text" class="form-control" id="city-value" name="city" required>
+                            </div>
+                            <div class="col-md-6 form-group p_star">
+                                <h6>PIN Code:</h6>
+                                <input type="text" class="form-control" id="pin-value" name="pin" required pattern="^[1-9][0-9]{5}$">
+                            </div>
+                            <div class="col-md-6 form-group p_star">
+                                <h6>State:</h6>
+                                <select class="country_select" id="state-value" name="state">
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Noida">Noida</option>
+                                    <option value="Ghaziabad">Ghaziabad</option>
+                                </select>
+                            </div>
+                            <div class="checkout_btn_inner align-items-center d-flex" style="margin-left:180px;">
+                                <a href="{% url 'index' %}"><button class="primary-btn" >Add Address</button></a>&nbsp;&nbsp;&nbsp;
+                        </div>
+
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
