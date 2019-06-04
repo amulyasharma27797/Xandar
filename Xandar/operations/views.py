@@ -47,7 +47,7 @@ def add_wishlist_item(request, pk):
     wishlist = Wishlist.objects.get(customer=request.user)
 
     try:
-        WishlistItems.objects.get(product=product)
+        WishlistItems.objects.get(wishlist=wishlist, product=product)
         return HttpResponse("Item already in wishlist")
     except WishlistItems.DoesNotExist:
         WishlistItems.objects.create(wishlist=wishlist, product=product)
@@ -67,13 +67,13 @@ def delete_wishlist_items(request, pk):
         return HttpResponse("Product Doesnot exist")
 
     try:
-        wishlist = Wishlist(customer=request.user)
+        wishlist = Wishlist.objects.get(customer=request.user)
     except Wishlist.DoesNotExist:
         return HttpResponse("Your Wishlist is empty")
 
     try:
-        WishlistItems.objects.get(product=product).delete()
-        return redirect('operations:wishlist')
+        WishlistItems.objects.get(wishlist=wishlist, product=product).delete()
+        return HttpResponse('Item deleted from wishlist Successfully')
     except WishlistItems.DoesNotExist:
         return HttpResponse("No such item exist")
 

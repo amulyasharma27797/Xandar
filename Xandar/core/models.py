@@ -122,7 +122,7 @@ class Wishlist(models.Model):
 
 class WishlistItems(models.Model):
     wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE)
-    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.product.name

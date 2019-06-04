@@ -9,6 +9,7 @@ from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
 
 
+# Amulya
 def user_register(request):
 
     if not request.user.is_authenticated:
@@ -25,7 +26,7 @@ def user_register(request):
                 if Customer.objects.filter(email=email).exists():
                     return render(request, 'accounts/register.html', context={'message': "Email already exists."})
                 else:
-                    username = first_name.replace(' ', '_').lower() + last_name + str(random.randint(1, 100))
+                    username = first_name.replace(' ', '_').lower() + last_name.lower() + str(random.randint(1, 100))
                     while Customer.objects.filter(username=username).exists():
                         username = first_name.replace(' ', '_').lower() + last_name + str(random.randint(1, 100))
                     user = Customer.objects.create_user(username=username, first_name=first_name, last_name=last_name,
@@ -42,8 +43,8 @@ def user_register(request):
                     msg.attach_alternative(html_content, "text/html")
                     msg.send()
 
-                    return render(request, 'accounts/login.html',
-                                  context={'message': "Registered Successfully. Now Log in"})
+                    messages.success(request, "You have been successfully registered. Login now!")
+                    return redirect('accounts:login_app')
             else:
                 return render(request, 'accounts/register.html', context={'message': "Passwords do not match"})
         return render(request, 'accounts/register.html')
@@ -53,52 +54,6 @@ def user_register(request):
 
 def dashboard(request):
     return render(request, 'accounts/dashboard.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #Aman
@@ -127,78 +82,6 @@ def login_page(request):
 def logout_user(request):
     logout(request)
     return redirect('accounts:login_app')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #Aayush
@@ -238,65 +121,6 @@ def reset_password(request):
 
     else:
         return render(request, 'accounts/reset_password.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

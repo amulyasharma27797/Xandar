@@ -40,6 +40,7 @@
 						<div class="form-group" style="color:red;">{% if message %}
 								{{message}}
 							{% endif %}
+							{% include 'accounts/messages.html' %}
 						</div>
 						<form class="row login_form" method="post" id="contactForm">
 							{% csrf_token %}
