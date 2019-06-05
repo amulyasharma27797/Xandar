@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from django.contrib import messages
@@ -228,6 +229,7 @@ def get_cart(request):
 
 def update_cart(request, product_id):
     errors = " "
+    global message
     form = UpdateCartForm()
     if request.method == "POST":
         form = UpdateCartForm(request.POST)
@@ -242,8 +244,9 @@ def update_cart(request, product_id):
             try:
                 cart = Cart.objects.get(user=request.user, is_ordered=False)
             except Cart.DoesNotExist:
-                messages.error(request, "You don't have anything in cart")
-                return render(request, 'operations/cart.html', {'errors': errors})
+                # messages.error(request, "You don't have anything in cart")
+                # return render(request, 'operations/cart.html', {'errors': errors})
+                message = "You Don't Have Anything In Cart"
 
             items = CartItems.objects.filter(cart=cart, product=product)[0]
             # quantity = form.cleaned_data['quantity']
@@ -253,8 +256,10 @@ def update_cart(request, product_id):
             if quantity <= product.quantity:
                 items.quantity = quantity
                 items.save()
+                message = "Item In Your Cart Updated successfully"
             else:
-                messages.error(request, f"Maximum amount available for {product.name} is {product.quantity} !!")
+                message = f"Maximum amount available for {product.name} is {product.quantity} !!"
+                #messages.error(request, f"Maximum amount available for {product.name} is {product.quantity} !!")
 
         else:
             product_id = str(product_id)
@@ -263,9 +268,23 @@ def update_cart(request, product_id):
 
             if quantity <= product.quantity:
                 request.session[settings.CART_SESSION_ID][product_id]['quantity'] = quantity
+                message = "Item In Your Cart Updated successfully"
                 request.session.modified = True
             else:
-                messages.error(request, f"Maximum amount available for {product.name} is {product.quantity} !!")
+                message = f"Maximum amount available for {product.name} is {product.quantity} !!"
+                #messages.error(request, f"Maximum amount available for {product.name} is {product.quantity} !!")
+        # import pdb;
+        # pdb.set_trace()
+        #html = render(request, 'operations/cart.html')
+        cart = Cart.objects.get(user=request.user, is_ordered=False)
+        items = CartItems.objects.filter(cart=cart,product=product)[0]
+        output = json.dumps({
+         'message':message,
+         'item_id': items.id,
+         'item_quantity':items.quantity,
+        })
+        return HttpResponse(output,content_type="application/json")
+        #return HttpResponse(output, content_type='application/json')
 
         return redirect('operations:view_cart')
 
