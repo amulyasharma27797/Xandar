@@ -53,7 +53,8 @@
                     <h2>Have a coupon?</h2>
                 </div>
                 <input type="text" placeholder="Enter coupon code" id="coupon-value" autocomplete="off">
-                <button class="tp_btn" onclick="apply_coupon()">Apply Coupon</button>
+                <button class="tp_btn" id="apply-coupon-btn">Apply Coupon</button>
+                <button class="tp_btn" id="remove-coupon-btn">Remove Coupon</button>
             </div>
             <div class="billing_details">
                 <div class="row">
@@ -68,7 +69,7 @@
                             </div>
                             <div class="col-md-6 form-group p_star">
                                 <h6>Phone Number:</h6>
-                                <input type="text" class="form-control" id="phone-value" name="name-value" required pattern="^[7-9][0-9]{9}$">
+                                <input type="text" class="form-control" id="phone-value" name="name-value" required pattern="^[7-9][0-9]{9}$" maxlength=10>
                                 <span class="error" id="phone-error" style="color:red"></span>
                             </div>
                             <div class="col-md-12 form-group p_star">
@@ -109,7 +110,7 @@
                             <ul class="list">
                                 <li><a href="#">Product <span>Total</span></a></li>
                                 {% for order in orders %}
-                                        <li><a href="#">{{order.product.name}}<span class="middle">x {{order.quantity}}</span> <span class="last">₹{% multiply order.product.price order.quantity%}</span></a></li>
+                                <li><a href="#">{{order.product.name}} <strong>x</strong> {{order.quantity}}</span> <span class="last">₹{% multiply order.product.price order.quantity%}</span></a></li>
                                 {% endfor %}
                             </ul>
                             <ul class="list list_2">
@@ -164,9 +165,10 @@
            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
            crossorigin="anonymous"></script>
 <script>
-    function apply_coupon()
-{
-    var token = '{{ csrf_token }}'
+
+$('#apply-coupon-btn').click(function(){
+
+var token = '{{ csrf_token }}'
    var coupon = document.getElementById('coupon-value').value
    var total = '{% total orders %}'
    $.ajax({
@@ -195,7 +197,19 @@
             console.log(error)
          }
 });
-}
+
+})
+
+
+$('#remove-coupon-btn').click(function(){
+
+    $('#coupon-value').val('')
+    $('#total-before-display').hide()
+    $('#total-after-display').hide()
+    $('#total-initial').show()
+     $('#coupon-applied').text('None')
+})
+
 $('#pin-value').change(function(){
     pincode = document.getElementById('pin-value').value
     if(!pincode.match("^[1-9][0-9]{5}$"))
@@ -297,8 +311,8 @@ $('#phone-value').change(function(){
          type: 'GET',
          beforeSend: function()
          {
-            $('#total-screen').css('opacity',0.2)
             $('#myLoader').removeAttr('hidden')
+            $('#total-screen').css('opacity',0.2)
             setTimeout(function()
             {
                 $('#total-screen').css('opacity',1)
