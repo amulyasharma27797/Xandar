@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import show_ordered_items, apply_coupon, place_order, get_delivery_addresses, order_successful_page, \
-    GetOrderedItems, add_address
+    GetOrderedItems, add_address, post_review
 
 app_name='orders'
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     path('add_address/', add_address, name='add_address'),
 ]
 
-urlpatterns+= [
+urlpatterns += [
     path('your_orders/', GetOrderedItems.as_view(), name='ordered_items'),
+    path('post_review/<int:pk>/', post_review, name='post_review'),
 ]

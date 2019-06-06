@@ -2,8 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 
 from core.get_data import get_data
-from core.models import OrderedItems, DeliveryAddresses, Customer, Wishlist, Cart, CartItems, ProductImage
+from core.models import OrderedItems, DeliveryAddresses, Customer, Wishlist, Cart, CartItems, ProductImage, Product, \
+    Review
 from django.views.generic import ListView
+from products.views import ProductDetailView
 # Create your views here.
 
 
@@ -76,15 +78,23 @@ class get_delivery_addresses(ListView):
     def post(self,id):
         pass
 
+
 def order_successful_page(request):
     context = request.session.get('order_context')
     current_cart = Cart.objects.get(user_id=request.user.id)
     orders = CartItems.objects.filter(cart_id=current_cart)
     for order in orders:
-        OrderedItems.objects.create(customer=request.user, product=order.product)
-    context['orders']=orders
+        OrderedItems.objects.create(customer=request.user,
+                                    title=order.product.name,
+                                    slug=order.product.slug,
+                                    image=order.product_img.image,
+                                    description=order.product.description,
+                                    price=order.product.price,
+                                    quantity=order.quantity)
+    context['orders'] = orders
     current_cart.delete()
     return render(request, 'orders/order_confirmed.html', context)
+
 
 class GetOrderedItems(ListView):
     template_name = 'orders/ordered_items.html'
@@ -92,13 +102,7 @@ class GetOrderedItems(ListView):
     def get_queryset(self):
         queryset = OrderedItems.objects.filter(customer=self.request.user).order_by('-order_date')
         return queryset
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        for order in context['object_list']:
-            order.product.product_image = ProductImage.objects.filter(product=order.product).first()
-        return context
+
 
 def add_address(request):
 
@@ -121,3 +125,10 @@ def add_address(request):
     return render(request, 'orders/add_address.html',)
 
 
+def post_review(request, pk):
+    product = Product.objects.get(pk=pk)
+    customer = request.user
+    message = request.POST.get('message')
+    customer_full_name = customer.first_name + " " + customer.last_name
+    Review.objects.create(customer_name=customer_full_name, product=product, message=message)
+    return HttpResponse('Response Posted Successfully')
