@@ -11,10 +11,6 @@ class ProductImageInline(admin.StackedInline):
         return self.initial_num
 
 
-class FeaturedProductsInline(admin.StackedInline):
-    model = FeaturedProducts
-
-
 class AttributeInline(admin.TabularInline):
     model = Attribute
     initial_num = 0
@@ -33,7 +29,7 @@ class ProductAdmin(admin.ModelAdmin):
     # list_filter = ('category','sub_category','gender')
     exclude = ('slug',)
     inlines = [
-        ProductImageInline, AttributeInline, FeaturedProductsInline
+        ProductImageInline, AttributeInline
     ]
 
 
@@ -43,7 +39,9 @@ class CustomerAdmin(UserAdmin):
     list_filter = ('first_name','email')
     search_fields = ['first_name','email','username']
 
-
+class SubCategoryAdmin(admin.ModelAdmin):
+    list_display = ['sub_category', 'category']
+    list_filter = ['category']
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Banner)
@@ -55,3 +53,6 @@ admin.site.register(CartItems)
 admin.site.register(Wishlist)
 admin.site.register(WishlistItems)
 # admin.site.register(ExtraAttribute)
+
+admin.site.register(ProductSubcategory, SubCategoryAdmin)
+    
