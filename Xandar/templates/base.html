@@ -51,13 +51,17 @@ CSS
 </div>
 
 <body>
+<div style="top:40%;left:44%;position:fixed;z-index:10" id="myLoader" hidden>
+<img src="{% static 'img/loader.gif'%}">
+    </div>
 <div id="total-screen" style="width:100%">
 
 {% include 'partials/navbar.html' %}
 
-
 {% block content %}
 {% endblock content %}
+
+
 
 
 
