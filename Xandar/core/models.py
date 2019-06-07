@@ -148,7 +148,12 @@ class WishlistItems(models.Model):
 # -------------PREVIOUS WORK - WEEK ONE---------------#
 class OrderedItems(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image = models.FileField(upload_to='product_images/ordered_items/', default='product_images/default.jpg')
+    slug = models.SlugField(max_length=250, null=True, blank=True, default="")
+    title = models.CharField(max_length=50, blank=False, default="")
+    description = models.CharField(max_length=255, default="")
+    price = models.PositiveIntegerField(blank=False,default=0)
+    quantity = models.PositiveSmallIntegerField(default=0)
     order_date = models.DateTimeField(auto_now_add=True)
 
 
@@ -216,3 +221,13 @@ class Newsletter(models.Model):
         return self.email
 
 
+class FeaturedProducts(models.Model):
+    is_featured = models.BooleanField(default=True)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    customer_name = models.CharField(max_length=50)
+    posted_date = models.DateTimeField(auto_now_add=True)
+    message = models.CharField(max_length=250, default='', blank=False)

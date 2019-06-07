@@ -75,6 +75,7 @@ class ProductDetailView(DetailView):
 		context = super().get_context_data(**kwargs)
 		context['attributes'] = []
 		context['images'] = []
+		context['reviews'] = []
 		try:
 			product = Product.objects.get(slug=self.kwargs['slug'])
 			product.count += 1
@@ -86,6 +87,16 @@ class ProductDetailView(DetailView):
 			context['attributes'].append(attribute)
 		for image in get_dataset(ProductImage, product_id=context['object']):
 			context['images'].append(image)
+		for review in get_dataset(Review, product=context['object']):
+			context['reviews'].append(review)
+		if self.request.user.is_authenticated:
+			try:
+				OrderedItems.objects.get(customer=self.request.user, title=context['object'].name)
+				context['can_post_review'] = True
+			except OrderedItems.DoesNotExist:
+				context['can_post_review'] = False
+		else:
+			context['can_post_review'] = False
 		return context
 
 
