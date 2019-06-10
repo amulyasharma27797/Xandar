@@ -1,5 +1,5 @@
 from Xandar import settings
-from core.models import Cart
+from core.models import Cart, ProductCategory, Product
 
 
 def cart_count(request):
@@ -14,3 +14,9 @@ def cart_count(request):
         if request.session[settings.CART_SESSION_ID] is None:
             return {'count': 0}
         return {'count': len(request.session[settings.CART_SESSION_ID])}
+
+def categories(request):
+    return {'category': ProductCategory.objects.order_by().distinct()}
+
+def price(request):
+    return {'product_count': Product.objects.all().count()}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load arith_tags %}
+
 {% block content %}
 
 
@@ -29,21 +31,25 @@
 <div class="head">Browse Categories</div>
 <ul class="main-categories">
 <li class="main-nav-list"><a data-toggle="collapse" href="#fruitsVegetable" aria-expanded="false" aria-controls="fruitsVegetable"><span
-class="lnr lnr-arrow-right"></span>By Categories<span class="number">(53)</span></a>
+class="lnr lnr-arrow-right"></span>By Categories<span class="number">({{category|count_objs}})</span></a>
 <ul class="collapse" id="fruitsVegetable" data-toggle="collapse" aria-expanded="false" aria-controls="fruitsVegetable">
-<li class="main-nav-list child"><a href="#">Glasses<span class="number">(13)</span></a></li>
-<li class="main-nav-list child"><a href="#">Shoes<span class="number">(09)</span></a></li>
-<li class="main-nav-list child"><a href="#">T-Shirts<span class="number">(17)</span></a></li>
+ {% for categories in category %}
+    {% with var_cat=categories %}
+    <li class="main-nav-list child"><a name={{var_cat}} href="/product/filter/?category={{categories}} ">{{categories}}<span class="number">({%count_category categories%})</span></a></li>
+    {% endwith %}
+    {% empty %}
+    <li class="main-nav-list child"><a href="#">No Categories<span class="number"></span></a></li>
+
+    {% endfor %}
 </ul>
 </li>
-
 <li class="main-nav-list"><a data-toggle="collapse" href="#meatFish" aria-expanded="false" aria-controls="meatFish"><span
-class="lnr lnr-arrow-right"></span>By Price<span class="number">(53)</span></a>
+class="lnr lnr-arrow-right"></span>By Price<span class="number">({{product_count}})</span></a>
 <ul class="collapse" id="meatFish" data-toggle="collapse" aria-expanded="false" aria-controls="meatFish">
-<li class="main-nav-list child"><a href="#">Price < 500<span class="number">(13)</span></a></li>
-<li class="main-nav-list child"><a href="#">500 &lt Price < 1000<span class="number">(09)</span></a></li>
-<li class="main-nav-list child"><a href="#">1000 &lt Price < 2000<span class="number">(17)</span></a></li>
-<li class="main-nav-list child"><a href="#">2000 > Price<span class="number">(01)</span></a></li>
+<li class="main-nav-list child"><a href="/product/filter/?priceless=500">Price < 500</a></li>
+<li class="main-nav-list child"><a href="/product/filter/?priceless=1000&pricegreat=500">500 &lt Price < 1000</a></li>
+<li class="main-nav-list child"><a href="/product/filter/?priceless=2000&pricegreat=1000">1000 &lt Price < 2000</a></li>
+<li class="main-nav-list child"><a href="/product/filter/?pricegreat=2000">2000 > Price</a></li>
 </ul>
 </li>
 </ul>
@@ -127,6 +133,7 @@ with red<span>(19)</span></label></li>
 
 
 <!-- single product -->
+
 {% for product in object_list %}
 
 
@@ -163,6 +170,49 @@ with red<span>(19)</span></label></li>
 </div>
 {% endfor %}
 
+    {% for product in filtered_item %}
+
+    <div class="col-lg-4 col-md-6">
+<div class="single-product">
+<a href="{% url 'products:product_detail' product.slug %}">
+<img class="img-fluid" src="{{ product.productimage_set.all.0.image.url }}" alt="" style="width: 255px; height: 255px">
+</a>
+<div class="product-details">
+
+<h6>{{ product.name }}</h6>
+<div class="price">
+<h6>&#x20B9; {{ product.price }}</h6>
+<h6 class="l-through">&#x20B9; 8999</h6>
+</div>
+<div class="prd-bottom">
+
+<a class="social-info" onclick="add_cart({{product.id}})">
+<span class="ti-bag"></span>
+<p class="hover-text">add to bag</p>
+</a>
+<a class="social-info" onclick="add_function({{product.id}})">
+<span class="lnr lnr-heart"></span>
+<p class="hover-text">Wishlist</p>
+</a>
+
+<a href="{% url 'products:product_detail' product.slug %}" class="social-info">
+<span class="lnr lnr-move"></span>
+<p class="hover-text">view more</p>
+</a>
+</div>
+</div>
+</div>
+</div>
+
+    {% empty %}
+
+    {% if messages %}
+    {% for msg in messages %}
+    <h1><div class="alert">{{msg}}</div></h1>
+    {% endfor %}
+    {% endif %}
+
+    {% endfor %}
 
 
 
@@ -255,3 +305,7 @@ console.log(error)
 
 
 {% endblock content %}
+
+
+
+

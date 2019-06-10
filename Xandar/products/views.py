@@ -7,6 +7,7 @@ from django.views.generic import DetailView
 #from operations.cart import add_cart
 from operations.views import add_wishlist_item
 from django.http import HttpResponse
+from django.contrib import messages
 from core.models import Wishlist
 from core.get_data import *
 
@@ -107,3 +108,79 @@ def product_add_wishlist_cart(request, pk):
 		return HttpResponse(add_wishlist_item(request, pk))
 	else:
 		return HttpResponse(add_to_cart(request, pk, quantity))
+
+
+def filter_by(request):
+	category = request.GET.get("category", None)
+	price_min = request.GET.get("priceless", None)
+	price_max = request.GET.get("pricegreat", None)
+
+	try:
+		category = ProductCategory.objects.get(category=category)
+		product_filter = category.product_set.all()
+		if not product_filter:
+			messages.error(request, "No search results found")
+		return render(request, "products/product_list.html", {'filtered_item': product_filter})
+
+	except ProductCategory.DoesNotExist:
+		product_filter = []
+		messages.error(request, f"{category}Category is empty")
+
+	if price_min and price_max:
+		product_filter = Product.objects.filter(
+			Q(price__lt=price_min) & Q(price__gt=price_max)
+		)
+
+	else:
+		if not price_min:
+			price_min = Product.objects.all().order_by('price')[0].price
+		if not price_max:
+			price_max = Product.objects.all().order_by('-price')[0].price
+
+		product_filter = Product.objects.filter(
+			Q(price__lt=price_min) | Q(price__gt=price_max)
+		)
+
+	#
+	#
+	# if category:
+	#  request.session['category'] = category
+	#  try:
+	#     category = ProductCategory.objects.get(category=category)
+	#     product_filter = category.product_set.all()
+	#  except ProductCategory.DoesNotExist:
+	#     messages.error(request, "Invalid Category Provided")
+	#     return render(request, "products/product_list.html")
+	#  if not product_filter:
+	#     messages.error(request, f"{category} category is empty ")
+
+	# if price_min and price_max:
+	#  request.session['pricemin'] = price_min
+	#  request.session['pricemax'] = price_max
+	#  try:
+	#     product_filter = Product.objects.filter(price__lte=price_min, price__gte=price_max)
+	#  except Product.DoesNotExist:
+	#     messages.error(request,f"No Product Found whose price less than {price_min} and price greater than {price_max}")
+	#     return render(request, "products/product_list.html")
+	# elif price_min:
+	#  request.session['pricemin'] = price_min
+	#  try:
+	#     product_filter = Product.objects.filter(price__lte=price_min)
+	#  except Product.DoesNotExist:
+	#     messages.error(request, f"No Product Found whose price less than {price_min}")
+	#     return render(request, "products/product_list.html")
+	# elif price_max:
+	#  request.session['pricemax'] = price_max
+	#  try:
+	#     product_filter = Product.objects.filter(price__gte=price_max)
+	#  except Product.DoesNotExist:
+	#     messages.error(request, f"No Product Found whose price greater than {price_max}")
+	#     return render(request, "products/product_list.html")
+	# else:
+	#  HttpResponse("Invalid Option Given")
+
+	return render(request, "products/product_list.html", {'filtered_item': product_filter})
+
+
+
+
