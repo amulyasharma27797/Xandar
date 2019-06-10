@@ -70,18 +70,31 @@ class Customer(AbstractUser):
             return self.first_name
 
 class ProductCategory(models.Model):
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
-    sub_category = models.CharField(choices=SUB_CATEGORY_CHOICES, max_length=20)
+    category = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+#sabme is_active dalega
+
     
     def __str__(self):
-        return self.category+'->'+self.sub_category
+        return self.category
     
-    class Meta:
-        verbose_name_plural = 'Product Categories'
+    # class Meta:
+    #     verbose_name_plural = 'Product Categories'
+
+class ProductSubcategory(models.Model):
+    sub_category = models.CharField(max_length=50)
+    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+
+
+
+    def __str__(self):
+        return self.sub_category
+
+
 
 
 class Product(models.Model):
-    product_category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=False)
     slug = models.SlugField(max_length=250, null=True, blank=True)
     description = models.CharField(max_length=255)
@@ -89,6 +102,12 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     count = models.PositiveSmallIntegerField(default=0)
     replacement = models.IntegerField()
+    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
+    sub_category = models.ForeignKey(ProductSubcategory, on_delete=models.CASCADE)
+    is_featured = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return self.name

@@ -2,6 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="33407e4b-1883-4a06-a6b7-52945bfdf8e2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/core/migrations/0007_auto_20190606_1404.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/migrations/0008_ordereditems_title.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/migrations/0009_ordereditems_slug.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/migrations/0010_review.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/migrations/0011_review_message.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/templatetags/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/products/templatetags/day_difference.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orders/templates/orders/ordered_items.html" beforeDir="false" afterPath="$PROJECT_DIR$/orders/templates/orders/ordered_items.html" afterDir="false" />
@@ -21,8 +28,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="212" column="57" lean-forward="true" selection-start-line="212" selection-start-column="57" selection-end-line="212" selection-end-column="57" />
+            <state relative-caret-position="899">
+              <caret line="233" column="57" lean-forward="true" selection-start-line="233" selection-start-column="57" selection-end-line="233" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -312,8 +319,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="212" column="57" lean-forward="true" selection-start-line="212" selection-start-column="57" selection-end-line="212" selection-end-column="57" />
+        <state relative-caret-position="899">
+          <caret line="233" column="57" lean-forward="true" selection-start-line="233" selection-start-column="57" selection-end-line="233" selection-end-column="57" />
         </state>
       </provider>
     </entry>
