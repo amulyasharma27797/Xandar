@@ -1,4 +1,4 @@
- {% load static %}
+{% load static %}
    <!-- start footer Area -->
    <footer class="footer-area section_gap">
       <div class="container">
@@ -27,7 +27,7 @@
 
 
                            <button class="click-btn btn btn-default" onclick="abc()"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></button>
-                           <div id="newsl" style="text-color:white; position: absolute; bottom: 5px;"></div>
+                           <div id="newsl" style="color:red; position: absolute; bottom: 5px;"></div>
 <!--                           <div style="position: absolute; left: -5000px;">-->
 <!--                              dsfa-->
 <!--                              <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">-->
@@ -79,22 +79,64 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
       </div>
    </footer>
 <script>
+function abc(){
+    email = $('#newletter-mail').val()
+    email_pattern = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    check = email_pattern.test(email)
 
-   function abc(){
-   email = $('#newletter-mail').val()
-    var token = '{{ csrf_token }}'
-    $.ajax({
+    if (check == false)
+      {
+         $('#newsl').text("Enter valid email").show()
+         setTimeout(function()
+            {
+                $('#newsl').text("Enter valid email").hide()
+            }
+            ,3000)
+
+      }
+
+   else if(check == true)
+      {
+         var token = '{{ csrf_token }}'
+         $.ajax({
                 headers: {"X-CSRFToken": token},
                 url: '/newsletter/',
                 data: {'email':email},
                 type: 'POST',
-                success: function(response) {
-                   $("#newsl").text(response)
+                beforeSend: function()
+                  {
+                     $('#myLoader').removeAttr('hidden')
+                     $('#total-screen').css('opacity',0.2)
+                     setTimeout(function()
+                        {
+                           $('#total-screen').css('opacity',1)
+                           $("#myLoader").hide()
+                        }
+                     ,3100)
+                  },
+                success: function(response){
+                  $('#response_message').text(response)
+                  if(response == 'Successfully Registered')
+                  {
+                     $('#response_image').attr('src', "{% static '/img/true.gif' %}")
+                  }
+                  else if(response == 'Email Already Exists')
+                  {
+                     $('#response_image').attr('src', "{% static '/img/false.gif' %}")
+                  }
+
+                  $('#myModal').fadeIn('slow')
+                  $("#myModal").delay(2500).fadeOut('slow', function()
+                  {
+                     $('#total-screen').css('opacity',1)
+                  })
                 },
                 error: function(error) {
                     console.log(error);
                 }
-            });
-}
+         });
+      }
+
+   }
 
 </script>

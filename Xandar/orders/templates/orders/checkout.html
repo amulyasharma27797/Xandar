@@ -53,6 +53,7 @@
                     <h2>Have a coupon?</h2>
                 </div>
                 <input type="text" placeholder="Enter coupon code" id="coupon-value" autocomplete="off">
+                <div class="error" id="err-msg" style="color:red; position:relative; padding-left:30px;"></div>
                 <button class="tp_btn" id="apply-coupon-btn">Apply Coupon</button>
                 <button class="tp_btn" id="remove-coupon-btn">Remove Coupon</button>
             </div>
@@ -178,20 +179,47 @@ var token = '{{ csrf_token }}'
                  'total':total},
          type: 'GET',
          success: function(response) {
-             document.getElementById('total-amount-before').innerHTML=$('#total-amount-before').text()
-             document.getElementById('total-amount').innerHTML='₹'+response
-             $('#total-before-display').show()
-             $('#total-after-display').show()
-             $('#total-initial').hide()
-             if(coupon === '')
-             {
-                 document.getElementById('coupon-applied').innerHTML='None'
-             }
-             else
-             {
-                 document.getElementById('coupon-applied').innerHTML=coupon
-             }
+            $('#response_message').text(response)
+            if(response == 'Provide a valid Coupon Name')
+                {
+                    $('#response_image').attr('src', "{% static '/img/false.gif' %}")
+                    $('#myModal').fadeIn('slow')
+                    $("#myModal").delay(2500).fadeOut('slow', function()
+                        {
+                            $('#total-screen').css('opacity',1)
+                        })
+                }
 
+            else if(response == 'Invalid Coupon No Discount')
+                {
+                    $('#response_image').attr('src', "{% static '/img/false.gif' %}")
+                    $('#myModal').fadeIn('slow')
+                    $("#myModal").delay(2500).fadeOut('slow', function()
+                        {
+                            $('#total-screen').css('opacity',1)
+                        })
+                }
+
+            else if(response == 'Coupon Expired')
+                {
+                    $('#response_image').attr('src', "{% static '/img/false.gif' %}")
+                    $('#myModal').fadeIn('slow')
+                    $("#myModal").delay(2500).fadeOut('slow', function()
+                        {
+                            $('#total-screen').css('opacity',1)
+                        })
+                }
+
+            else
+                {
+                    document.getElementById('total-amount-before').innerHTML=$('#total-amount-before').text()
+                    document.getElementById('total-amount').innerHTML='₹'+response
+                    $('#total-before-display').show()
+                    $('#total-after-display').show()
+                    $('#total-initial').hide()
+
+                    document.getElementById('coupon-applied').innerHTML=coupon
+                }
          },
          error: function(error) {
             console.log(error)
@@ -316,7 +344,7 @@ $('#phone-value').change(function(){
             setTimeout(function()
             {
                 $('#total-screen').css('opacity',1)
-                $("#myloader").hide()
+                $("#myLoader").hide()
             }
             ,3000)
 

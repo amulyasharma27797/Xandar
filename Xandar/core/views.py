@@ -55,7 +55,6 @@ def news_letter(request):
         else:
             return HttpResponse('Email Already Exists')
 
-
 def unsubscribe(request):
     if request.user.is_authenticated:
         try:

@@ -56,3 +56,4 @@ admin.site.register(WishlistItems)
 
 admin.site.register(ProductSubcategory, SubCategoryAdmin)
     
+admin.site.register(Coupons)

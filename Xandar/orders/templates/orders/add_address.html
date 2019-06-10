@@ -31,14 +31,18 @@
                             <div class="col-md-6 form-group p_star">
                                 <h6>Name:</h6>
                                 <input type="text" class="form-control" id="name-value" name="name" required>
+                                <span class="error" id="name-error" style="color:red; font-size:12px;"></span>
                             </div>
                             <div class="col-md-6 form-group p_star">
                                 <h6>Phone Number:</h6>
-                                <input type="text" class="form-control" id="phone-value" name="phone" required pattern="^[7-9][0-9]{9}$">
+                                <input type="text" class="form-control" id="phone-value" name="phone"
+                                       required pattern="^[7-9][0-9]{9}$" maxlength="10">
+                                <span class="error" id="phone-error" style="color:red; font-size:12px;"></span>
                             </div>
                             <div class="col-md-12 form-group p_star">
                                 <h6>Address 1:</h6>
                                 <input type="text" class="form-control" id="address-1-value" name="address1" required>
+                                <span class="error" id="address-error" style="color:red; font-size:12px;"></span>
                             </div>
                             <div class="col-md-12 form-group p_star">
                                 <h6>Address 2:</h6>
@@ -47,10 +51,12 @@
                             <div class="col-md-6 form-group p_star">
                                 <h6>City:</h6>
                                 <input type="text" class="form-control" id="city-value" name="city" required>
+                                <span class="error" id="city-error" style="color:red; font-size:12px;"></span>
                             </div>
                             <div class="col-md-6 form-group p_star">
                                 <h6>PIN Code:</h6>
                                 <input type="text" class="form-control" id="pin-value" name="pin" required pattern="^[1-9][0-9]{5}$">
+                                <span class="error" id="pin-error" style="color:red; font-size:12px;"></span>
                             </div>
                             <div class="col-md-6 form-group p_star">
                                 <h6>State:</h6>
@@ -61,7 +67,7 @@
                                 </select>
                             </div>
                             <div class="checkout_btn_inner align-items-center d-flex" style="margin-left:180px;">
-                                <a href="{% url 'index' %}"><button class="primary-btn" >Add Address</button></a>&nbsp;&nbsp;&nbsp;
+                                <a href="{% url 'index' %}"><button onclick="add_address()" class="primary-btn" >Add Address</button></a>&nbsp;&nbsp;&nbsp;
                         </div>
 
                         </form>
@@ -74,4 +80,64 @@
         </div>
     </div>
 </section>
+
+<script>
+    function add_address(){
+        var name = ''
+        var phone = ''
+        var address = ''
+        var city = ''
+        var pin = ''
+
+        if ($('#name-value').val())
+            {
+                name = $('#name-value').val()
+                $('#name-error').text('')
+            }
+        else
+            {
+                $('#name-error').text('Please Enter Your Name')
+            }
+
+        if ($('#phone-value').val())
+            {
+                phone = $('phone-value').val()
+                $('#phone-error').text('')
+            }
+        else
+            {
+                $('#phone-error').text('Number must be in Indian format +91-(AAAAA BBBBB)')
+            }
+
+        if ($('#address-1-value').val())
+            {
+                address = $('address-1-value').val()
+                $('#address-error').text('')
+            }
+        else
+            {
+                $('#address-error').text('Enter your address')
+            }
+
+         if ($('#city-value').val())
+            {
+                city = $('city-value').val()
+                $('#city-error').text('')
+            }
+        else
+            {
+                $('#city-error').text('Enter your city')
+            }
+
+        if ($('#pin-value').val())
+            {
+                pin = $('pin-value').val()
+                $('#pin-error').text('')
+            }
+        else
+            {
+                $('#pin-error').text('Please enter a valid PIN Code, Ex-208010')
+            }
+    }
+</script>
 {% endblock %}
