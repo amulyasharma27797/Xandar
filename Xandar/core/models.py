@@ -5,6 +5,8 @@ from django.urls import reverse
 from Xandar.util import unique_slug_generator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from datetime import datetime, timedelta
+from django.core.validators import MinValueValidator
 
 
 def get_extra_field(table, extra_attributes):
@@ -103,7 +105,7 @@ class Product(models.Model):
     count = models.PositiveSmallIntegerField(default=0)
     replacement = models.IntegerField()
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
-    sub_category = models.ForeignKey(ProductSubcategory, on_delete=models.CASCADE)
+    sub_category = models.ForeignKey(ProductSubcategory, on_delete=models.CASCADE, null=True)
     is_featured = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
@@ -221,13 +223,20 @@ class Newsletter(models.Model):
         return self.email
 
 
-class FeaturedProducts(models.Model):
-    is_featured = models.BooleanField(default=True)
-    product = models.OneToOneField(Product, on_delete=models.CASCADE)
-
-
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=50)
     posted_date = models.DateTimeField(auto_now_add=True)
     message = models.CharField(max_length=250, default='', blank=False)
+
+class Coupons(models.Model):
+    name = models.CharField(max_length=30)
+    valid_from = models.DateTimeField(auto_now_add=True)
+    valid_till = models.DateTimeField(default=datetime.now()+timedelta(days=30))
+    discount = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
+
+    class Meta:
+        verbose_name = _("Coupons")
+
+    def __str__(self):
+        return self.name

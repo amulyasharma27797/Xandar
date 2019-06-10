@@ -6,6 +6,8 @@ from core.models import OrderedItems, DeliveryAddresses, Customer, Wishlist, Car
     Review
 from django.views.generic import ListView
 from products.views import ProductDetailView
+from datetime import datetime
+from core.models import Coupons
 # Create your views here.
 
 
@@ -132,3 +134,28 @@ def post_review(request, pk):
     customer_full_name = customer.first_name + " " + customer.last_name
     Review.objects.create(customer_name=customer_full_name, product=product, message=message)
     return HttpResponse('Response Posted Successfully')
+
+
+def apply_coupon(request):
+    coupon_name = request.GET.get('coupon', None)
+
+    if coupon_name:
+        try:
+            coupon = Coupons.objects.get(name=coupon_name)
+            valid_till = coupon.valid_till
+
+            remainder = int(datetime.now().day - valid_till.day)
+
+            if remainder > 0:
+                return HttpResponse("Coupon Expired")
+
+            discount_percentage = coupon.discount % 100
+            total = int(request.GET['total'])
+
+            total = total - discount_percentage
+            return HttpResponse(total)
+
+        except Coupons.DoesNotExist:
+            return HttpResponse("Invalid Coupon No Discount")
+    else:
+        return HttpResponse("Provide a valid Coupon Name")
