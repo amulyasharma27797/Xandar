@@ -35,7 +35,7 @@ class="lnr lnr-arrow-right"></span>By Categories<span class="number">({{category
 <ul class="collapse" id="fruitsVegetable" data-toggle="collapse" aria-expanded="false" aria-controls="fruitsVegetable">
  {% for categories in category %}
     {% with var_cat=categories %}
-    <li class="main-nav-list child"><a name={{var_cat}} href="/product/filter/?category={{categories}} ">{{categories}}<span class="number">({%count_category categories%})</span></a></li>
+    <li class="main-nav-list child"><a name={{var_cat}} href="/product/category={{categories}} ">{{categories}}<span class="number">({%count_category categories%})</span></a></li>
     {% endwith %}
     {% empty %}
     <li class="main-nav-list child"><a href="#">No Categories<span class="number"></span></a></li>
@@ -43,13 +43,16 @@ class="lnr lnr-arrow-right"></span>By Categories<span class="number">({{category
     {% endfor %}
 </ul>
 </li>
-<li class="main-nav-list"><a data-toggle="collapse" href="#meatFish" aria-expanded="false" aria-controls="meatFish"><span
+    {% if not no_category %}
+        <li class="main-nav-list"><a data-toggle="collapse" href="#meatFish" aria-expanded="false" aria-controls="meatFish"><span
 class="lnr lnr-arrow-right"></span>By Price<span class="number">({{product_count}})</span></a>
 <ul class="collapse" id="meatFish" data-toggle="collapse" aria-expanded="false" aria-controls="meatFish">
-<li class="main-nav-list child"><a href="/product/filter/?priceless=500">Price < 500</a></li>
-<li class="main-nav-list child"><a href="/product/filter/?priceless=1000&pricegreat=500">500 &lt Price < 1000</a></li>
-<li class="main-nav-list child"><a href="/product/filter/?priceless=2000&pricegreat=1000">1000 &lt Price < 2000</a></li>
+<li class="main-nav-list child"><a onclick="call_url(500)">Price > 500</a></li>
+<li class="main-nav-list child"><a onclick="call_url(1000)">Price > 1000</a></li>
+<li class="main-nav-list child"><a onclick="call_url(2000)">1000 &lt Price < 2000</a></li>
 <li class="main-nav-list child"><a href="/product/filter/?pricegreat=2000">2000 > Price</a></li>
+
+    {% endif %}
 </ul>
 </li>
 </ul>
@@ -233,6 +236,11 @@ with red<span>(19)</span></label></li>
 <br>
     </div>
 <script>
+function call_url(amount)
+{
+    current_url = window.location.href.split("&&")[0]
+    window.location.href = current_url+'&&price='+amount
+}
 function add_function(object_id)
 {
 var token = '{{ csrf_token }}'
