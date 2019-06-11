@@ -3,12 +3,13 @@ from django.shortcuts import render, redirect, render_to_response
 
 from core.get_data import get_data
 from core.models import OrderedItems, DeliveryAddresses, Customer, Wishlist, Cart, CartItems, ProductImage, Product, \
-    Review
+    Review, Order
 from django.views.generic import ListView
 from products.views import ProductDetailView
 from datetime import datetime
 from core.models import Coupons
 # Create your views here.
+# from Xandar.core.models import Order
 
 
 def show_ordered_items(request):
@@ -19,14 +20,17 @@ def show_ordered_items(request):
     else:
         if request.user.is_authenticated:
             try:
+                # customer_order = Order.objects.get(customer=request.user)
+                # orders = OrderedItems.objects.filter(order=customer_order)
                 current_cart = Cart.objects.get(user_id=request.user.id)
                 orders = CartItems.objects.filter(cart_id=current_cart)
                 delivery_addresses = DeliveryAddresses.objects.filter(customer=request.user)
+
                 context = {
-                    'orders':orders,
+                    'orders': orders,
                     'addresses': delivery_addresses
                 }
-            except Cart.DoesNotExist:
+            except Order.DoesNotExist:
                 context = {
                     'orders': False
                 }
@@ -85,8 +89,14 @@ def order_successful_page(request):
     context = request.session.get('order_context')
     current_cart = Cart.objects.get(user_id=request.user.id)
     orders = CartItems.objects.filter(cart_id=current_cart)
+    try:
+        order_obj = Order.objects.get(customer=request.user)
+    except Order.DoesNotExist:
+        Order.objects.create(customer=request.user)
+        order_obj = Order.objects.get(customer=request.user)
+
     for order in orders:
-        OrderedItems.objects.create(customer=request.user,
+        OrderedItems.objects.create(order=order_obj,
                                     title=order.product.name,
                                     slug=order.product.slug,
                                     image=order.product_img.image,
@@ -102,7 +112,13 @@ class GetOrderedItems(ListView):
     template_name = 'orders/ordered_items.html'
     
     def get_queryset(self):
-        queryset = OrderedItems.objects.filter(customer=self.request.user).order_by('-order_date')
+
+        try:
+            order_customer = Order.objects.get(customer=self.request.user)
+            queryset = OrderedItems.objects.filter(order=order_customer).order_by('-order_date')
+        except Order.DoesNotExist:
+            queryset = []
+
         return queryset
 
 

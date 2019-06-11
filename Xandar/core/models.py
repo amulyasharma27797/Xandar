@@ -148,8 +148,16 @@ class WishlistItems(models.Model):
     def __str__(self):
         return self.product.name
 # -------------PREVIOUS WORK - WEEK ONE---------------#
-class OrderedItems(models.Model):
+
+
+class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+
+class OrderedItems(models.Model):
+    order = models.ForeignKey(Order,null=True, on_delete=models.CASCADE)
     image = models.FileField(upload_to='product_images/ordered_items/', default='product_images/default.jpg')
     slug = models.SlugField(max_length=250, null=True, blank=True, default="")
     title = models.CharField(max_length=50, blank=False, default="")

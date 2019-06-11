@@ -11,6 +11,8 @@ from django.contrib import messages
 from core.models import Wishlist
 from core.get_data import *
 
+from core.models import Order
+
 
 class ProductListView(ListView):
 	model = Product
@@ -93,9 +95,12 @@ class ProductDetailView(DetailView):
 			context['reviews'].append(review)
 		if self.request.user.is_authenticated:
 			try:
-				OrderedItems.objects.get(customer=self.request.user, title=context['object'].name)
-				context['can_post_review'] = True
-			except OrderedItems.DoesNotExist:
+				order_tmp = Order.objects.get(customer=self.request.user)
+
+				if order_tmp:
+					context['can_post_review'] = True
+
+			except Order.DoesNotExist:
 				context['can_post_review'] = False
 		else:
 			context['can_post_review'] = False
