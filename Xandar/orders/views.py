@@ -1,15 +1,19 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
+from django.views.generic.edit import ModelFormMixin
 
 from core.get_data import get_data
 from core.models import OrderedItems, DeliveryAddresses, Customer, Wishlist, Cart, CartItems, ProductImage, Product, \
     Review, Order
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
+
+from orders.forms import UpdateAddress
 from products.views import ProductDetailView
 from datetime import datetime
 from core.models import Coupons
 # Create your views here.
-# from Xandar.core.models import Order
 
 
 def show_ordered_items(request):
@@ -83,6 +87,23 @@ class get_delivery_addresses(ListView):
 
     def post(self,id):
         pass
+
+
+@login_required
+def delete_address(request, pk):
+    DeliveryAddresses.objects.get(id=pk).delete()
+    return redirect('orders:delivery_address')
+
+
+class UpdateAddress(LoginRequiredMixin, UpdateView):
+    model = DeliveryAddresses
+    template_name = 'orders/update_address.html'
+    context_object_name = 'details'
+    form_class = UpdateAddress
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('orders:delivery_address')
 
 
 def order_successful_page(request):

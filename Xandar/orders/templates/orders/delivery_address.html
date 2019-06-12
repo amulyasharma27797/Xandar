@@ -17,9 +17,9 @@
     <!-- End Banner Area -->
 <div>
 
-<section class="cart-area" style="">
+<section class="cart-area" style="padding:20px;">
     {% if address %}
-    <h3 style="margin-left:192px;margin-top:20px">YOUR SAVED ADDRESSES</h3>
+    <h3 style="margin-left:192px;margin-top:20px; color:#fd7e14;">YOUR SAVED ADDRESSES</h3>
     {% else %}
     <h3 style="margin-left:192px;margin-top:20px">NO ADDRESSES SAVED</h3>
     {% endif %}
@@ -29,11 +29,11 @@
    <div class="row">
       <div class="col-lg-12" style="">
 
-         <div class="row" style="">
+         <div class="row">
             <div class="col-lg-8 col-sm-4">
-               <div class="single-product" style="padding: 20px 0px 0px 0px;">
+               <div class="single-product" style="padding:20px;">
                   <div class="product-details">
-                     <h3>Name: {{address.receiver_name}}</h3><hr color="#777777">
+                     <h3 style="color:#dc3545;">Name: {{address.receiver_name}}</h3>
                      <div class="price">
                         <h4>Address: {{address.street_address}}</h4>
                         <h4>City: {{address.city}}, {{address.state}}</h4>
@@ -45,21 +45,24 @@
                   </div>
                </div>
             </div>
-<!--            <div class="col-lg-4 col-sm-6" style="padding:0px 0px 0px 0px">-->
-<!--                  <div class="button-group-area mt-40" style="text-align:center;padding-top:20px">-->
-<!--                     <a href="{% url 'operations:track' %}"><button type="button" class="btn btn-warning" style="width:100%;">Update Address</button></a><br><br>-->
-<!--                  </div>-->
-<!--                    <div class="button-group-area mt-40" style="text-align:center;">-->
-<!--                    <button type="button" class="btn btn-danger" style="width:100%;float:right">Delete Address</button><br>-->
-<!--                    </div>-->
-<!--            </div>-->
+            <div class="col-lg-4 col-sm-6" style="padding:20px 40px 0px 0px">
+                  <div class="button-group-area mt-40" style="text-align:center;padding-top:20px">
+                     <a href="{% url 'orders:update_address' address.id %}"><button type="button" class="btn btn-warning" style="width:100%;">Update Address</button></a><br><br>
+                  </div>
+                    <div class="button-group-area mt-40" style="text-align:center;">
+                        <a href="{% url 'orders:delete_address' address.id %}">
+                            <button type="button" class="btn btn-danger" style="width:100%;float:right">Delete Address</button>
+                        </a>
+                        <br>
+                    </div>
+            </div>
          </div>
       </div>
    </div>
 
    </div><br>
     {% endfor %}
-    <div align="center" class="container" style="background-color:#f7f7f7;width:70%;height:200px">
+    <div align="center" class="container" style="background-color:#f7f7f7;width:70%;height:200px;">
         <a href="{% url 'orders:add_address' %}">
             <div>
                 <img src="{% static 'img/add_banner.jpg' %}" width="200px" height="200px">
@@ -69,3 +72,9 @@
     <br>
 </section></div>
 {% endblock %}
+
+{% block scroll_js %}
+<script type="text/javascript">
+    $("html,body").scrollTop(320);
+</script>
+{% endblock scroll_js%}

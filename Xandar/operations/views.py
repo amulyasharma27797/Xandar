@@ -32,27 +32,29 @@ def list_wishlist_items(request):
 
     return render(request, 'operations/wishlist.html', {"items": items, 'error': error})
 
-@login_required
+# @login_required
 def add_wishlist_item(request, pk):
-    # if request.user.is_authenticated:
-    try:
-        product = Product.objects.get(id=pk)
-    except Product.DoesNotExist:
-        return HttpResponse('The Product you are trying to add does not exist')
+    if request.user.is_authenticated:
+        try:
+            product = Product.objects.get(id=pk)
+        except Product.DoesNotExist:
+            return HttpResponse('The Product you are trying to add does not exist')
 
-    try:
+        try:
+            wishlist = Wishlist.objects.get(customer=request.user)
+        except Wishlist.DoesNotExist:
+            Wishlist.objects.create(customer=request.user)
+
         wishlist = Wishlist.objects.get(customer=request.user)
-    except Wishlist.DoesNotExist:
-        Wishlist.objects.create(customer=request.user)
 
-    wishlist = Wishlist.objects.get(customer=request.user)
-
-    try:
-        WishlistItems.objects.get(wishlist=wishlist, product=product)
-        return HttpResponse("Item already in wishlist")
-    except WishlistItems.DoesNotExist:
-        WishlistItems.objects.create(wishlist=wishlist, product=product)
-        return HttpResponse("Item Added To Wishlist Successfully")
+        try:
+            WishlistItems.objects.get(wishlist=wishlist, product=product)
+            return HttpResponse("Item already in wishlist")
+        except WishlistItems.DoesNotExist:
+            WishlistItems.objects.create(wishlist=wishlist, product=product)
+            return HttpResponse("Item Added To Wishlist Successfully")
+    else:
+        return HttpResponse("Please Login to Add to wishlist")
 
 @login_required
 def add_wishlist_to_cart(request, product_id):
